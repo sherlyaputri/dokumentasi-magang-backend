@@ -259,6 +259,55 @@ tiup cluster template > topology.yaml
 
 > 📝 Edit file `topology.yaml` sesuai kebutuhan server (jumlah TiKV, TiFlash, PD, dll).
 
+Contoh isi `topology.yaml` yang digunakan:
+
+```yaml
+# Global configuration
+global:
+  user: "sherly"
+  ssh_port: 22
+  deploy_dir: "/tidb-deploy-sherly"
+  data_dir: "/tidb-data-sherly"
+
+server_configs: {}
+
+# PD (Placement Driver) — mengatur distribusi data & scheduling
+pd_servers:
+  - host: 192.168.4.100
+    client_port: 2481
+    peer_port: 2482
+
+# TiDB Server — menerima SQL query dari aplikasi
+tidb_servers:
+  - host: 192.168.4.100
+    port: 4101
+    status_port: 10181
+
+# TiKV — penyimpanan data row-based (OLTP)
+tikv_servers:
+  - host: 192.168.4.100
+    port: 21170
+    status_port: 21190
+
+# Monitoring (Prometheus) — monitoring metrics cluster
+monitoring_servers:
+  - host: 192.168.4.100
+    port: 9101
+    ng_port: 12021
+
+# Grafana — dashboard visualisasi monitoring
+grafana_servers:
+  - host: 192.168.4.100
+    port: 3101
+```
+
+> 💡 **Keterangan**:
+> - `deploy_dir` → direktori tempat binary TiDB di-deploy
+> - `data_dir` → direktori tempat data TiKV dan PD disimpan
+> - `client_port` pada PD → port untuk komunikasi dengan TiDB Server
+> - `peer_port` pada PD → port untuk komunikasi antar PD node
+> - Jika ingin **multi-node**, tambahkan entry baru di masing-masing section dengan `host` yang berbeda
+
 ---
 
 ### 2. Pre-check Cluster
